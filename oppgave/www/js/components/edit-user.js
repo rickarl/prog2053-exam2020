@@ -72,23 +72,20 @@ class EditUser extends LitElement {
 
   // Handles updating the user data
   sendUser(u) {
-    //data from the HTML form, get using the target event property as in https://www.w3schools.com/jsref/event_target.asp
+    // Using formdata (https://developer.mozilla.org/en-US/docs/Web/API/FormData) to send the form very simply.
+    // Because EditUser is a class and this is being run as a function of that class, we can use event target to define
+    // the form as outlined in https://www.w3schools.com/jsref/event_target.asp
     var filledForm = new FormData(u.target.form);
     fetch('api/updateUser.php', {
       method: 'POST',
       body: filledForm            // Our data to be sent!
      }).then(res=>res.json())
        .then(data=>{
-        // Checking for errors, as in https://developer.mozilla.org/en-US/docs/Web/API/Response/status
-        if(data.status = 200)
-          {
-            console.log("Successful update!");
-          }
-        else
-          {
-            console.log("ERROR! Something went wrong!");
-          }
-        })
+          console.log("Successful update!");
+       })
+       .catch(error=>{
+          console.error("ERROR! Something went wrong!");
+       })
   }
 }
 customElements.define('edit-user', EditUser);
