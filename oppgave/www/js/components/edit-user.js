@@ -36,9 +36,27 @@ class EditUser extends LitElement {
       user: { type: Object }
     };
   }
+
+  // Handles updating the user data.
+  // Using formdata (https://developer.mozilla.org/en-US/docs/Web/API/FormData) to send the form very simply.
+  // Because EditUser is a class and this is being run as a function of that class, we can use event target to define
+  // the form as outlined in https://www.w3schools.com/jsref/event_target.asp
+  sendUser(u) {
+    var filledForm = new FormData(u.target.form);
+    fetch('api/updateUser.php', {
+      method: 'POST',
+      body: filledForm            // Our data to be sent!
+     }).then(res=>res.json())
+       .then(data=>{
+          console.log("Successful update!");
+       })
+       .catch(error=>{            // Check for errors
+          console.error("ERROR! Something went wrong!");
+       })
+  }
   
-      // We set our function that sends updated user data to run on hitting submit,
-      // as in https://www.w3schools.com/jsref/event_onsubmit.asp
+  // We set our function that sends updated user data to run on hitting submit,
+  // as in https://www.w3schools.com/jsref/event_onsubmit.asp
   render()  {
     return html`
       <div id="userContainer">
@@ -68,24 +86,6 @@ class EditUser extends LitElement {
       </form>
 		</div>
 		`;
-  }
-
-  // Handles updating the user data.
-  // Using formdata (https://developer.mozilla.org/en-US/docs/Web/API/FormData) to send the form very simply.
-  // Because EditUser is a class and this is being run as a function of that class, we can use event target to define
-  // the form as outlined in https://www.w3schools.com/jsref/event_target.asp
-  sendUser(u) {
-    var filledForm = new FormData(u.target.form);
-    fetch('api/updateUser.php', {
-      method: 'POST',
-      body: filledForm            // Our data to be sent!
-     }).then(res=>res.json())
-       .then(data=>{
-          console.log("Successful update!");
-       })
-       .catch(error=>{            // Check for errors
-          console.error("ERROR! Something went wrong!");
-       })
   }
 }
 customElements.define('edit-user', EditUser);
