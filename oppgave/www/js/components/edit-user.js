@@ -5,7 +5,8 @@ class EditUser extends LitElement {
    * @brief: locally made stylesheet - could also use bootstrap classes
    * I could not get the page to run on docker properly, got errors relating to Selenium etc.
    * So, don't know how it actually looks, but should be good.
-   * Design is inspired by our project delivery (own CSS, having email/password fields)
+   * Design is inspired by our project delivery (non-Bootstrap CSS, having email/password fields)
+   * I also added sources for some functionality which I grabbed from w3 or occasionally other sites
    */
   static get styles() {
     return [
@@ -36,12 +37,11 @@ class EditUser extends LitElement {
     };
   }
   
-
+      // We set our function that sends updated user data to run on hitting submit,
+      // as in https://www.w3schools.com/jsref/event_onsubmit.asp
   render()  {
     return html`
       <div id="userContainer">
-      // We set our function that sends updated user data to run on hitting submit,
-      // as in https://www.w3schools.com/jsref/event_onsubmit.asp
       <form onsubmit="return this.sendUser()" id="userForm" method="POST">
         // Assume user also has email and password - not doing more than reading them as they are not part of the task
         <div class="form-group">
@@ -70,11 +70,11 @@ class EditUser extends LitElement {
 		`;
   }
 
-  // Handles updating the user data
+  // Handles updating the user data.
+  // Using formdata (https://developer.mozilla.org/en-US/docs/Web/API/FormData) to send the form very simply.
+  // Because EditUser is a class and this is being run as a function of that class, we can use event target to define
+  // the form as outlined in https://www.w3schools.com/jsref/event_target.asp
   sendUser(u) {
-    // Using formdata (https://developer.mozilla.org/en-US/docs/Web/API/FormData) to send the form very simply.
-    // Because EditUser is a class and this is being run as a function of that class, we can use event target to define
-    // the form as outlined in https://www.w3schools.com/jsref/event_target.asp
     var filledForm = new FormData(u.target.form);
     fetch('api/updateUser.php', {
       method: 'POST',
@@ -83,7 +83,7 @@ class EditUser extends LitElement {
        .then(data=>{
           console.log("Successful update!");
        })
-       .catch(error=>{
+       .catch(error=>{            // Check for errors
           console.error("ERROR! Something went wrong!");
        })
   }
